@@ -43,7 +43,6 @@ class TestCharacter(TestCase):
         self.ironsword = Item(name='ironsword', id='ironsword')
         mm.db.session.add(self.ironsword)
 
-
         mm.db.session.add(Ingredient(item=self.ironore, recipe=self.ironbar, amount=5))
         mm.db.session.add(Ingredient(item=self.ironbar, recipe=self.refinery, amount=1))
         mm.db.session.add(Ingredient(item=self.ironbar, recipe=self.ironsword, amount=1))
@@ -51,6 +50,7 @@ class TestCharacter(TestCase):
         mm.db.session.add(RecipeBook(item=self.ironbar, character=self.conan))
         mm.db.session.add(RecipeBook(item=self.ironsword, character=self.conan))
         mm.db.session.commit()
+
     def teardown(self):
         """ """
         mm.db.session.rollback()

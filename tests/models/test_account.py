@@ -7,11 +7,8 @@ from mm.models import Account, Character, Planet
 from mock import Mock
 from config import TestConfiguration
 
-
 class TestAccount(TestCase):
     """ Ensure that the account is functioning."""
-    SQLALCHEMY_DATABASE_URI = "sqlite://"
-    TESTING = True
 
     def create_app(self):
         """ """
@@ -20,12 +17,23 @@ class TestAccount(TestCase):
 
     def setUp(self):
         """ """
+        mm.db.drop_all()
         mm.db.create_all()
         self.bob = Account(username='Bob', oauth_id='111', email='bob@bob.com', provider='google', realname='bob')
-        self.conan = Character(name='Conan')
-        self.beowulf = Character(name='Beowulf')
-        self.earth = Planet(name='Earth')
         mm.db.session.add(self.bob)
+        self.earth = Planet(name='Earth', id='earth')
+        mm.db.session.add(self.earth)
+        self.bob.planet=self.earth
+
+        # added to bob
+        self.conan = Character(name='Conan', account=self.bob)
+        mm.db.session.add(self.conan)
+        # non-added
+        self.beowulf = Character(name='Beowulf')
+        mm.db.session.add(self.beowulf)
+
+        mm.db.session.commit()
+
     def teardown(self):
         """ """
         mm.db.session.commit()
@@ -39,7 +47,7 @@ class TestAccount(TestCase):
         self.bob.characters.append(self.beowulf)
         self.assertEquals(self.bob.characters, [self.conan, self.beowulf])
 
-        self.assertEquals(self.bob.character, None)
+        self.assertEquals(self.bob.character, self.conan)
         self.bob.character=self.beowulf
         self.assertEquals(self.bob.character, self.beowulf)
 
@@ -58,3 +66,4 @@ class TestAccount(TestCase):
         token = self.bob.__unicode__()
         self.assertEquals('Bob',token)
         
+
