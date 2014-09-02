@@ -3,9 +3,10 @@ from mock import MagicMock, Mock
 from authomatic import Authomatic
 from flask.ext.testing import TestCase
 
-from mm import app, db, craft, login
 import mm
+from mm import app, db, login, craft
 from mm.models import Item, Account, Character, Ingredient, Inventory, RecipeBook, Planet, PlanetLoot
+from presets import setup_user
 
 
 class CraftTestCase(TestCase):
@@ -21,39 +22,7 @@ class CraftTestCase(TestCase):
             we need to repopulate it and add it to self. """
         db.create_all()
         app.testing = True
-
-        # create items and recipes
-        gold = Item(id='gold', name='Gold')
-        ironore = Item(id='ironOre', name='Iron Ore')
-        ironbar = Item(id='ironBar', name='Iron Bar')
-        refinery = Item(id='refinery', name='Refinery')
-        earth = Planet(id='earth', name='Earth')
-
-        # create account, character and inventory
-        self.oldauth = mm.login.authomatic
-        result = Mock()
-        result.user = Mock()
-        result.user.update = MagicMock()
-        result.user.name = 'bob dole'
-        result.user.id = '123123123'
-        result.user.email = 'foo@bar.com'
-        bob = Account(oauth_id=result.user.id, realname=result.user.name, email=result.user.email, username=result.user.id)
-        conan = Character(name="Conan")
-        bob.character=conan
-        db.session.add(gold)
-        db.session.add(ironore)
-        db.session.add(ironbar)
-        db.session.add(refinery)
-        db.session.add(Ingredient(item=ironore, recipe=ironbar, amount=5))
-        db.session.add(Ingredient(item=ironbar, recipe=refinery, amount=1))
-        db.session.add(RecipeBook(character=conan, item=ironbar))
-        db.session.add(bob)
-        db.session.add(Inventory(character=conan, item=ironore, amount=200))
-        db.session.add(Inventory(character=conan, item=ironbar, amount=1))
-        db.session.add(Inventory(character=conan, item=gold, amount=200))
-        db.session.commit()
-        mm.login.authomatic = Mock(Authomatic)
-        mm.login.authomatic.login = MagicMock(return_value=result)
+        self.oldauth=setup_user(app, db)
         self.app = app.test_client()
         response = self.app.get("/login/google/")
         self.assertTemplateUsed('index.html')

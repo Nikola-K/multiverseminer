@@ -36,7 +36,6 @@ def loginProvider(provider):
             if (result.user.name and result.user.id):
                 app.logger.debug('%s has logged in with an id of %s' % (result.user.name, result.user.id))
                 account = Account.query.filter_by(oauth_id=result.user.id)
-                print account
                 if account.first():
                     account = account.first()
                     if account.character:

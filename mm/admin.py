@@ -32,7 +32,7 @@ class ItemAdmin(BaseAdmin):
     # edit_template = 'edit.html'
 
     # Make columns sortable
-    column_sortable_list = (('name', Item.name), ('category', Category.name))
+    # column_sortable_list = (('name', Item.name), ('category', Category.name))
 
     # Give them pretty names
     column_labels = dict(name='Item Name')
