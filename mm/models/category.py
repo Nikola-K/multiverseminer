@@ -7,7 +7,12 @@ class Category(db.Model):
     id = db.Column(db.String(64), primary_key=True)
     name = db.Column(db.String(64), unique=True, nullable=False)
     parent_id = db.Column(db.ForeignKey('category.id'))
-    parent = db.relationship("Category")
+    parent = db.relationship("Category",
+                             backref=db.backref('children',
+                                                remote_side=[parent_id],
+                                                uselist=True ),
+                             uselist=False,  remote_side=[id])
+
 
     def __repr__(self):
         """ return a tag for the category"""
