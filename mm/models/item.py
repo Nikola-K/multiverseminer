@@ -37,7 +37,8 @@ class Item(db.Model):
     storagelimit = db.Column(db.Integer, default=0, nullable=False)
     strength = db.Column(db.Float, default=0, nullable=False)
     value = db.Column(db.Integer, default=0, nullable=False)
-
+    # FIXME craft-produce should tell how many of the item is created when crafted
+    # for example you can make many copper necklaces from a copper bar, even accounting for waste
     category = db.relationship('Category', backref='items')
     autoproduce = db.relationship('Item', foreign_keys=[auto_produce_id])
 

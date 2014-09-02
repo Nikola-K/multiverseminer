@@ -18,7 +18,7 @@ class Ingredient(db.Model):
 
     recipe = db.relationship("Item", backref='ingredients',
                              foreign_keys=[recipe_id])
-    item = db.relationship("Item", backref='usedIn', foreign_keys=[item_id])
+    item = db.relationship("Item", backref='used_in', foreign_keys=[item_id])
 
     db.PrimaryKeyConstraint('recipe_id', 'item_id', name='ingredient_pk')
 
@@ -35,4 +35,4 @@ class Ingredient(db.Model):
 
     def __unicode__(self):
         """ return the unicode name """
-        return "Ingredient for %s " % self.recipe_id
+        return "<Ingredient for %s>" % self.recipe_id

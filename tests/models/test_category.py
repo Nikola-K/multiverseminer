@@ -39,12 +39,12 @@ class TestCategory(TestCase):
         mm.db.dispose()
 
     def test_category_strings(self):
-        """ validate character relationship with bob """
+        """ validate category strings """
         self.assertEquals("<Category u'Food'>", self.food.__repr__())
         self.assertEquals("Food", self.food.__unicode__())
 
     def test_category_parents(self):
-        """ validate character relationship with bob """
+        """ validate category relationships """
         self.assertEquals(None, self.consumable.parent)
         self.assertEquals([self.food, self.potion], self.consumable.children)
         self.assertEquals(self.consumable, self.food.parent)
