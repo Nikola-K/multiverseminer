@@ -40,6 +40,8 @@ class Item(db.Model):
     # FIXME craft-produce should tell how many of the item is created when crafted
     # for example you can make many copper necklaces from a copper bar, even accounting for waste
     category = db.relationship('Category', backref='items')
+
+    # FIXME autoproduce untested
     autoproduce = db.relationship('Item', foreign_keys=[auto_produce_id])
 
     def contains(self, item):
