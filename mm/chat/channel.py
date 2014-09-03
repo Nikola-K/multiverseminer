@@ -55,21 +55,21 @@ class Channel():
             if command == "setowner":
                 user = self.get_user(args[1])
                 if user: self.set_owner(user, sender)
-            else if command == "addadmin":
+            elif command == "addadmin":
                 user = self.get_user(args[1])
                 if user: self.add_admin(user, sender)
-            else if command == "removeadmin":
+            elif command == "removeadmin":
                 user = self.get_user(args[1])
                 if user: self.remove_admin(user, sender)
-            else if command == "addmoderator":
+            elif command == "addmoderator":
                 user = self.get_user(args[1])
                 if user: self.add_moderator(user, sender)
-            else if command == "removemoderator":
+            elif command == "removemoderator":
                 user = self.get_user(args[1])
                 if user: self.remove_moderator(user, sender)
-            else if command == "ban":
+            elif command == "ban":
                 user = self.get_user(args[1])
                 if user: self.ban(user, sender)
-            else if command == "pardon":
+            elif command == "pardon":
                 user = self.get_user(args[1])
                 if user: self.pardon(user, sender)
