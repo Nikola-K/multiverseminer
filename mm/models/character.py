@@ -2,7 +2,7 @@
 
 from mm import db
 from item import Item
-from inventory import Inventory 
+from inventory import Inventory
 from flask import jsonify
 from datetime import datetime, timedelta
 from random import randint
@@ -12,7 +12,7 @@ from mm.exceptions import CraftingException
 class Character(db.Model):
     """ Character is the actual in-game PC."""
     name = db.Column(db.String(64), primary_key=True, nullable=False)
-    account = db.relationship("Account", backref=db.backref("characters", uselist=True), uselist=False )
+    account = db.relationship("Account", backref=db.backref("characters", uselist=True), uselist=False)
 
     constitution = db.Column(db.Integer, default=1, nullable=False)
     dexterity = db.Column(db.Integer, default=1, nullable=False)
@@ -60,7 +60,7 @@ class Character(db.Model):
                     chance = loot.droprate * 100000
                     x = randint(0, 10000)
                     print x
-                    #app.logger.debug('is %s less than %s for %s?' % (x, chance, loot.item.name))
+                    # app.logger.debug('is %s less than %s for %s?' % (x, chance, loot.item.name))
                     if x <= chance:
                         amount = randint(1, 5)
                         self.adjust_inventory(loot.item, amount)
@@ -80,8 +80,7 @@ class Character(db.Model):
                                lastrun=oldtime, result='success')
         else:
             return jsonify(collectiontype=collectiontype, result='failure',
-                           message="Invalid collection type." )
-
+                           message="Invalid collection type.")
 
     def craft_item(self, itemid, count=1):
         newitem = Item.query.filter_by(id=itemid)
@@ -100,7 +99,7 @@ class Character(db.Model):
                     raise CraftingException("cannot craft %s %s without %s %s"
                                             % (count, itemid, amount_needed, ingredient.item.id))
             # remove items from inventory now that we know all exist
-            #app.logger.debug("Crafting %s %s " % (count, itemid))
+            # app.logger.debug("Crafting %s %s " % (count, itemid))
             for ingredient in newitem.ingredients:
                 amount_needed = count * ingredient.amount
                 self.adjust_inventory(ingredient.item, -amount_needed)
@@ -135,7 +134,7 @@ class Character(db.Model):
                                             % (amount, inventory_item.item.id, inventory_item.amount))
         # Item wasn't found in inventory, create a new inventory item
         if amount > 0:
-            inv=Inventory(item=item, item_id=item.id, character=self, character_name=self.name, amount=amount)
+            Inventory(item=item, item_id=item.id, character=self, character_name=self.name, amount=amount)
             return amount
         raise CraftingException("Item %s not found in inventory??" % item.id)
 
