@@ -28,4 +28,4 @@ class PlanetLoot(db.Model):
 
     def __unicode__(self):
         """ return the unicode name """
-        return "%s on %s " % (self.item_id, self.planet_id)
+        return "%s on %s" % (self.item_id, self.planet_id)
