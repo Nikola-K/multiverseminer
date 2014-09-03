@@ -19,13 +19,12 @@ class MmTestCase(TestCase):
     def setUp(self):
         """ Since the DB is stored in memory for the duration,
             we need to repopulate it and add it to self. """
+
+        db.drop_all()
         db.create_all()
         app.testing = True
 
         # create items and recipes
-        gold = Item(id='gold', name='Gold')
-        ironore = Item(id='ironOre', name='Iron Ore')
-        ironbar = Item(id='ironBar', name='Iron Bar')
         refinery = Item(id='refinery', name='Refinery')
         earth = Planet(id='earth', name='Earth')
 
@@ -38,23 +37,10 @@ class MmTestCase(TestCase):
         result.user.id = '123123123'
         result.user.provider = 'google'
         result.user.email = 'foo@bar.com'
-        bob = Account(oauth_id=result.user.id, realname=result.user.name, email=result.user.email, username=result.user.id)
-        conan = Character(name="Conan")
-        bob.character=conan
-        db.session.add(gold)
-        db.session.add(ironore)
-        db.session.add(ironbar)
-        db.session.add(refinery)
-        db.session.add(Ingredient(item=ironore, recipe=ironbar, amount=5))
-        db.session.add(Ingredient(item=ironbar, recipe=refinery, amount=1))
-        db.session.add(RecipeBook(character=conan, item=ironbar))
-        db.session.add(bob)
-        db.session.add(Inventory(character=conan, item=ironore, amount=200))
-        db.session.add(Inventory(character=conan, item=ironbar, amount=1))
-        db.session.add(Inventory(character=conan, item=gold, amount=200))
-        db.session.add(earth)
-        db.session.add(PlanetLoot(planet=earth, item=gold, droprate=.1))
-        db.session.add(PlanetLoot(planet=earth, item=ironore, droprate=.1))
+        self.bob = Account(oauth_id=result.user.id, realname=result.user.name, email=result.user.email, username=result.user.id)
+        self.conan = Character(name="Conan")
+        self.bob.character=self.conan
+        db.session.add(self.bob)
 
         db.session.commit()
         mm.login.authomatic = Mock(Authomatic)
@@ -66,11 +52,11 @@ class MmTestCase(TestCase):
 
     def tearDown(self):
         """ clean up after ourselves. """
-        # remove the cookie
-        db.session.remove()
-        # remove the DB.
-        db.drop_all()
+        mm.db.session.rollback()
+        mm.db.session.close()
+        mm.db.drop_all()
         mm.login.authomatic = self.oldauth
+
 
     def test_index_route(self):
         """ test the primary route """
@@ -96,45 +82,6 @@ class MmTestCase(TestCase):
         response = self.app.get("/404shouldbehere")
         self.assert404(response)
 
-#    def test_provider_newaccount_route(self):
-#        """ create an account"""
-#        db.drop_all()
-#        db.create_all()
-#        response = self.app.get("/login/google/")
-#        self.assertTemplateUsed('index.html')
-#        self.assertIn('Welcome back, bob dole.', response.data)
-
-    def test_provider_bad_return_user_route(self):
-        """ Test a bad user object from provider results."""
-        result = Mock()
-        result.user = False
-
-        mm.login.authomatic.login = MagicMock(return_value=result)
-        response = self.app.get("/login/google/")
-        self.assertTemplateUsed('account.html')
-        self.assertIn('', response.data)
-
-    def test_provider_no_user_name_route(self):
-        """ test a bad user.name from provider results. """
-        result = Mock()
-        result.user = Mock()
-        result.user.update = MagicMock()
-        result.user.name = False
-
-        mm.login.authomatic.login = MagicMock(return_value=result)
-        response = self.app.get("/login/google/")
-        self.assertTemplateUsed('account.html')
-        self.assertIn('There is an issue with your account. Contact us.',
-                      response.data)
-        self.assertStatus(response, 200)
-
-    def test_provider_redirect_google_route(self):
-        """ Ensure that the redirect to google is happening. """
-        mm.login.authomatic = self.oldauth
-        response = self.app.get("/login/google/")
-        self.assertStatus(response, 302)
-        self.assertIn('accounts.google.com', response.headers[1][1])
-
     def test_collect_valid_type(self):
         """ collect a valid mine type """
         response = self.app.get("/collect/mine")
@@ -146,12 +93,3 @@ class MmTestCase(TestCase):
         self.assertIn('failure', response.data)
         self.assertIn("Invalid collection type.", response.data)
 
-    def test_collect_w_no_acct(self):
-        """ collect with no account type """
-
-        response = self.app.get("/logout")
-        self.assertTemplateUsed('index.html')
-
-        response = self.app.get("/collect/mine")
-        self.assertTemplateUsed('require_login.html')
-        self.assertIn('Select an authentication provider:', response.data)

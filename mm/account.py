@@ -2,7 +2,7 @@
 
 # Import the stuffs!
 from mm import app, db, session, jsonify
-from models import Character
+from models import Character, Account
 from mm.login import login_required, character_required
 
 @app.route('/character/inventory')
