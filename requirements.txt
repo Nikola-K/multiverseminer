@@ -3,7 +3,7 @@ Flask-Admin
 Flask-Assets
 Flask-Migrate
 Flask-Paginate
-Flask-SQLAlchemy
+Flask-SQLAlchemy==1.0
 Flask-WTF
 SQLAlchemy
 SQLAlchemy-migrate

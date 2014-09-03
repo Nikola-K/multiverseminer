@@ -1,10 +1,10 @@
 Flask-Testing
 fixture
-Rednose>=0.4.1
-unittest2>=0.5.1
+Rednose
+unittest2
 coveralls
-mock>=1.0.1
-coverage>=3.7.1
+mock
+coverage
 nose
 blinker
 pytest
