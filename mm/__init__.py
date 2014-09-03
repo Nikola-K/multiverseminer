@@ -44,20 +44,22 @@ js = Bundle(
     'js/jquery/*.js',
     'js/foundation.min.js',
     'js/custom.js',
-    filters='jsmin',
-    output='gen/packed.js'
+#    filters='jsmin',
+#    output='gen/packed.js'
 )
 assets.register('js_all', js)
 
 jsmine = Bundle(
     'js/minigame/mine.js',
-    filters='jsmin',
-    output='gen/minepacked.js'
+#    filters='jsmin',
+#    output='gen/minepacked.js'
 )
 assets.register('js_mine', jsmine)
 
 css = Bundle('css/*.css',
-             filters='yui_css', output='gen/packed.css')
+#             filters='yui_css',
+#output='gen/packed.css'
+)
 assets.register('css_all', css)
 
 #########################################################################
