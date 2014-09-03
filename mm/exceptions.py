@@ -6,4 +6,4 @@ class CraftingException(Exception):
         self.message = value
 
     def __str__(self):
-        return repr(self.message)
+        return self.message
