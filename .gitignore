@@ -92,3 +92,6 @@ local_settings.py
 
 # KDE directory preferences
 .directory
+
+# Local database
+dev.db
